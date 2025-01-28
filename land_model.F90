@@ -170,6 +170,8 @@ type :: land_data_type
      IS_adot_sg          => NULL(),  & ! surface mass flux to ice sheet, (kg m-2 s-1)
      IS_mask_sg          => NULL()     ! ice sheet mask for passing mass fluxes via the coupler to MOM6
 
+   real :: IS_adot_int ! The area-integrated surface mass flux to the ice sheet, (kg s-1)
+
    logical, pointer, dimension(:,:,:):: &
         mask => NULL()               ! true if land
 
@@ -360,6 +362,7 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
   land2cplr%discharge_heat    = 0.0
   land2cplr%discharge_snow    = 0.0
   land2cplr%discharge_snow_heat = 0.0
+  land2cplr%IS_adot_int       = 0.0
   if (IS_enabled)                 land2cplr%IS_adot_sg = 0.0
   if (IS_enabled .or. IS_calving) land2cplr%IS_mask_sg = 0.0
 
