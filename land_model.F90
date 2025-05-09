@@ -489,9 +489,10 @@ subroutine send_tile_data_3d(id, x, send_immediately)
 end subroutine send_tile_data_3d
 
 ! ============================================================================
-subroutine update_land_model_fast ( cplr2land, land2cplr )
+subroutine update_land_model_fast ( cplr2land, land2cplr, na )
   type(atmos_land_boundary_type), intent(in)    :: cplr2land
   type(land_data_type)          , intent(inout) :: land2cplr
+  integer, intent(in) :: na
 
 #ifndef LAND_GRID_FROM_ATMOS
   call error_mesg('update_land_model_fast','Should not be calling null version of update_land_model_fast',FATAL)
