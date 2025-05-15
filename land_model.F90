@@ -305,10 +305,15 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
 #endif
 
 #ifndef LAND_GRID_FROM_ATMOS
+  !Niki Zadeh: Do we really need this code block? Who's using these diag_axis ids?
   allocate(tile_ids(mpp_get_current_ntile(domain)))
   tile_ids = mpp_get_tile_id(domain)
-  allocate(glon(nlon,nlat), glat(nlon,nlat))
-  call get_grid_cell_centers ('LND', tile_ids(1), glon,  glat)
+  !allocate(glon(nlon,nlat), glat(nlon,nlat)); glon=0.0 ; glat=0.0
+  !This call cause all cores to read the grid file leading to I/O race condition
+  !call get_grid_cell_centers ('LND', tile_ids(1), glon,  glat)
+  !Instead we should pass the domain to avoid the I/O race condition
+  allocate(glon(ie-is+1,je-js+1), glat(ie-is+1,je-js+1)); glon=0.0 ; glat=0.0
+  call get_grid_cell_centers ('LND', tile_ids(1), glon,  glat, domain)
 
   if(mpp_get_ntile_count(domain)==1) then
      ! grid has just one tile, so we assume that the grid is regular lat-lon
